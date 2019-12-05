@@ -1,0 +1,118 @@
+.custom-container {
+  width: 100%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  flex-grow: 1;
+}
+
+.custom-base-container {
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-center {
+  text-align: center;
+  width: 100%;
+}
+
+.custom-add-margin-top {
+  margin-top: 10px;
+}
+
+.custom-right-margin {
+  margin-right: 10px;
+}
+
+.table {
+  width: 100%;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  background-color: transparent;
+}
+
+form {
+  width: 500px;
+  margin: auto;
+}
+
+@media only screen and (max-width:600px) {
+  .custom-container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+  .display-4 {
+    font-size: 2.5rem;
+  }
+  h3 {
+    font-size: 1.50rem;
+  }
+  form {
+    width: 90%;
+    margin: auto;
+  }
+}
+
+@media only screen and (max-width:991px) {
+  /*This is necessary so that the nav-links don't default to hidden on larger
+    screens. I chose 991px to match the Bootstrap breakpoint*/
+  .custom-hide {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0.0;
+    transition: all 0.5s ease-in-out;
+  }
+}
+
+.custom-hide-2 {
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.1s ease-in-out;
+}
+
+.custom-show {
+  max-height: 1000px;
+  transition: all 0.5s ease-in-out;
+}
+
+.custom-pagination-margin {
+  margin-top: 25px;
+}
+
+.custom-hover:hover {
+  cursor: pointer;
+}
+
+.custom-modal-hide {
+  display: none;
+  overflow: hidden;
+}
+
+.custom-modal {
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  outline: 0;
+  z-index: 1072;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.custom-max-width {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.custom-hover-cursor:hover {
+  cursor: pointer;
+}
