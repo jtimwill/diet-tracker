@@ -22,7 +22,7 @@ class MealEdit extends Component {
 
   schema = {
     name: Joi.string().required().min(3).label('Name'),
-    description: Joi.string().required().min(3).label('Description'),
+    description: Joi.string().label('Description'),
   };
 
   async componentDidMount() {

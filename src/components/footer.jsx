@@ -3,7 +3,7 @@ import React from 'react';
 const Footer = () => {
   return (
     <nav className="navbar navbar-light bg-light">
-      jtimwill@gmail.com
+      jtwillia@umich.edu
     </nav>
   );
 };

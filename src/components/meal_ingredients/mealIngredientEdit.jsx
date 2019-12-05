@@ -67,7 +67,7 @@ class MealIngredientEdit extends Component {
     try {
           console.log("Trys");
       await updateMealIngredient(this.props.match.params.id, this.state.meal_ingredient);
-      this.props.history.push("/meals/index");
+      this.props.history.push(`/meals/${this.state.meal_ingredient.mealId}/show`);
     } catch (exception) {
       if (exception.response && exception.response.status === 400) {
         alert(exception.response.data.errmsg);

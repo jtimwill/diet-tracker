@@ -1,7 +1,6 @@
 import React, { Component} from 'react';
 import { Link } from 'react-router-dom';
 import { getMeals, deleteMeal } from '../../services/mealService.js';
-import { deleteMealIngredient } from '../../services/mealIngredientService.js';
 import { getIngredients } from '../../services/ingredientService.js';
 import { compareDates } from '../../utilities/sortUtility.js';
 import { reformatDate } from '../../utilities/dateUtility.js';
@@ -14,20 +13,20 @@ import { Line } from 'react-chartjs-2';
 
 class MealIndex extends Component {
   state = {
-    days: {},
+    days: [],
     meals: [],
     current_page: 1,
     sort_direction: "desc",
-    current_meal: {},
+    current_day: [],
     ingredients: [],
-    api_response: false
+    api_response: false,
   };
 
   chart_data = {
     labels: [],
     datasets: [
       {
-        label: 'Quiz Scores',
+        label: 'Calories',
         fill: false,
         lineTension: 0.2,
         backgroundColor: 'rgb(0,123,255,0.2)',
@@ -65,8 +64,20 @@ class MealIndex extends Component {
       }
     });
 
-    const days = {};
+    this.setState({ meals });
+    const days = this.createDays(meals);
 
+    days.forEach((day) => {
+      this.chart_data.labels.push(day[0].date);
+      this.chart_data.datasets[0].data.push(this.getTotalCalories(day));
+    });
+    this.chart_data.datasets[0].data.reverse();
+
+    this.setState({ days, ingredients, api_response: true });
+  }
+
+  createDays(meals){ // Doesn't work with delete handler
+    const days = {};
     for (let meal of meals) {
       if (days[meal.date]) {
         days[meal.date].push(meal);
@@ -74,8 +85,22 @@ class MealIndex extends Component {
         days[meal.date] = [meal];
       }
     }
+    const days_array = [];
+    for (let day in days) {
+      days_array.push(days[day]);
+    }
+    return days_array;
+  }
 
-    this.setState({ days, meals, ingredients, api_response: true });
+  getTotalCalories(day) {
+    let total_calories = 0;
+
+    for (let meals of day) {
+      for (let mi of meals.meal_ingredients) {
+        total_calories += mi.ingredientId.calories*mi.servings;
+      }
+    }
+    return total_calories;
   }
 
   confirmDelete(name) {
@@ -88,6 +113,8 @@ class MealIndex extends Component {
     const new_meals = old_meals.filter(m => m.id !== selected_meal.id);
 
     this.setState({ meals: new_meals });
+    const days = this.createDays(new_meals);
+    this.setState({ days });
 
     try {
       await deleteMeal(selected_meal.id);
@@ -96,28 +123,10 @@ class MealIndex extends Component {
         alert("This meal has already been deleted.");
       }
       this.setState({ meals: old_meals });
+      const days = this.createDays(old_meals);
+      this.setState({ days });
     }
   };
-
-  handleMealIngredientDelete = async (meal_index, selected_meal_ingredient) => {
-    if (!this.confirmDelete("meal ingredient")) { return; }
-    const old_meal_ingredients = this.state.meals[meal_index].meal_ingredients;
-    const new_meal_ingredients = old_meal_ingredients.filter(me => me.id !== selected_meal_ingredient.id);
-    const meals = [ ...this.state.meals ];
-
-    meals[meal_index].meal_ingredients = new_meal_ingredients;
-    this.setState({ meals });
-
-    try {
-      await deleteMealIngredient(selected_meal_ingredient.mealId, selected_meal_ingredient.id);
-    } catch (exception) {
-      if (exception.response && exception.response.status === 404) {
-        alert("This meal ingredient has already been deleted.");
-      }
-      meals[meal_index].meal_ingredients = old_meal_ingredients
-      this.setState({ meals });
-    }
-  }
 
   handlePageChange = (page_number, page_size) => {
     const length = this.state.days.length;
@@ -139,19 +148,15 @@ class MealIndex extends Component {
   }
 
   generatePage(page, page_size) {
-    const days = { ...this.state.days };
-    const days_array = [];
-    for (let day in days)
-      days_array.push(day);
-
+    const days = [ ...this.state.days ];
     const start_index = (page-1)*page_size;
     const end_index = start_index + page_size;
-    const day_slice = days_array.slice(start_index,end_index);
+    const day_slice = days.slice(start_index,end_index);
     return day_slice;
   }
 
   handleDaySelect = day => {
-    if (day === this.state.current_day) day = {};
+    if (day === this.state.current_day) day = [];
     this.setState({ current_day: day });
   }
 
@@ -165,24 +170,42 @@ class MealIndex extends Component {
 
     return (
       <Spinner ready={this.state.api_response}>
-        <Link to="/meals/new" className="btn btn-primary mr-1">
-          New Meal
-        </Link>
-        <button onClick={this.toggleSort} className="btn btn-info btn-sm">
-          {"Sort by date "}
-          <i className={"fa fa-sort-" + sort_direction}></i>
-        </button>
+      <div className="custom-max-width">
+        <div className="card my-2">
+          <div className="card-header bg-light">
+            <h5 className="card-title">Your Diet</h5>
+          </div>
+          <div className="card-body">
+            <Line data={this.chart_data}/>
+          </div>
+          <ul className="list-group list-group-flush">
+            <li className="list-group-item">
+              <span className="card-text font-weight-bold">Days Tracked: </span>
+              {days.length}
+            </li>
+          </ul>
+          <div className="card-body">
+            <Link to="/meals/new" className="btn btn-primary mr-1">
+              New Meal
+            </Link>
+            <button onClick={this.toggleSort} className="btn btn-info btn-sm">
+              {"Sort by date "}
+              <i className={"fa fa-sort-" + sort_direction}></i>
+            </button>
+          </div>
+        </div>
+
 
         {this.generatePage(current_page, page_size).map((day, index) => (
           <div
-            key={day.date}
+            key={index}
             className={"my-1 card " + (day === current_day ? "border-primary" : "")}
           >
             <DayHead
               day={day}
               onDaySelect={this.handleDaySelect}
+              total_calories={this.getTotalCalories(day)}
             />
-
             <DayBody
               day={day}
               current_day={current_day}
@@ -198,6 +221,7 @@ class MealIndex extends Component {
           current_page={current_page}
           onPageChange={this.handlePageChange}
         />
+        </div>
       </Spinner>
     );
   }

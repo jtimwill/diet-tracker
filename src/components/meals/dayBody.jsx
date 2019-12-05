@@ -2,37 +2,49 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const MealBody = ({ meal, current_meal, onMealDelete, index }) => {
+const DayBody = ({ day, current_day, onMealDelete, index }) => {
   const btn = "btn-sm btn btn-";
   const fa = "fa fa-";
-  const url_prefix = `/meals/${meal.id}`;
 
-  function getCSSClass(meal, current_meal) {
-    return meal === current_meal ? "custom-show" : "custom-hide-2"
+  function getCSSClass(day, current_meal) {
+    return day === current_day ? "custom-show" : "custom-hide-2"
   }
 
-  function formatInfo(me) {
-    return `Ingredient: ${me.ingredientId} Servings: ${me.servings}`;
+  function formatInfo(meal) {
+    let total_calories = 0;
+    let total_carbs = 0;
+    let total_fat = 0;
+    let total_protein = 0;
+    for (let mi of meal.meal_ingredients) {
+      total_calories += mi.ingredientId.calories*mi.servings;
+      total_carbs += mi.ingredientId.carbohydrates*mi.servings;
+      total_fat += mi.ingredientId.fat*mi.servings;
+      total_protein += mi.ingredientId.protein*mi.servings;
+    }
+    return `| Calories: ${total_calories.toFixed(2)}
+            | Carbs: ${total_carbs.toFixed(2)}
+            | Fat: ${total_fat.toFixed(2)}
+            | Protein: ${total_protein.toFixed(2)}
+            `;
   }
 
   return (
     <div>
-      {meal.meal_ingredients.map(meal_ingredient => (
-        <div key={meal_ingredient.id} className={getCSSClass(meal, current_meal)}>
+      {day.map(meal => (
+        <div key={meal.id} className={getCSSClass(day, current_day)}>
           <div className="card-body">
             <div className="d-flex flex-row align-items-center justify-content-between">
-              <div className="w-50">{formatInfo(meal_ingredient)}</div>
               <div>
-                <Link
-                  to={`${url_prefix}/meal-ingredients/${meal_ingredient.id}/edit`}
-                  className={`${btn}info mx-1`}
-                >
+              <Link to={`/meals/${meal.id}/show`} className="">
+                {meal.name} --
+              </Link>
+                {formatInfo(meal)}
+              </div>
+              <div>
+                <Link to={`/meals/${meal.id}/edit`} className={`${btn}info`}>
                   <i className={`${fa}pencil-square-o`}></i>
                 </Link>
-                <button
-                  className={`${btn}danger`}
-                  onClick={() => onMealDelete(index, meal_ingredient)}
-                >
+                <button onClick={() => onMealDelete(meal)} className={`${btn}danger`}>
                   <i className={`${fa}trash`}></i>
                 </button>
               </div>
@@ -44,11 +56,11 @@ const MealBody = ({ meal, current_meal, onMealDelete, index }) => {
   );
 };
 
-MealBody.propTypes = {
-  meal: PropTypes.object.isRequired,
-  current_meal: PropTypes.object.isRequired,
+DayBody.propTypes = {
+  day: PropTypes.array.isRequired,
+  current_day: PropTypes.array.isRequired,
   onMealDelete: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired
 };
 
-export default MealBody;
+export default DayBody;
