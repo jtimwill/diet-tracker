@@ -9,7 +9,7 @@ export function getErrorMessage({ name, value }, schema) {
 export function validateStateObject(state_obj, schema) {
   const found_errors = {};
   const { error: errors } = Joi.validate(state_obj, schema, { abortEarly: false });
-  if (!errors) return '';
+  if (!errors) return false;
   for (let error of errors.details) {
     found_errors[error.path[0]] = error.message;
   }
