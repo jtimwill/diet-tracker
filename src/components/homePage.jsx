@@ -6,7 +6,7 @@ const HomePage = () => {
   const btn = "btn btn-lg btn-";
 
   async function exampleUserLogin() {
-    await login("adam@example.com", "123456");
+    await login("tony@example.com", "12345");
     window.location = "/users/me/show";
   }
   return(
