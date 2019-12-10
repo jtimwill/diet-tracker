@@ -4,12 +4,15 @@ import { getMeal } from '../../services/mealService.js';
 import { deleteMealIngredient } from '../../services/mealIngredientService.js';
 import { getIngredients } from '../../services/ingredientService.js';
 import { reformatDate } from '../../utilities/dateUtility.js';
+import { getDiet } from '../../services/dietService.js';
+import { getUser } from '../../services/userService.js';
 import Pagination from '../reusable/pagination';
 import Spinner from '../reusable/spinner';
 import { Pie } from 'react-chartjs-2';
 
 class MealShow extends Component {
   state = {
+    diet: {},
     meal: {
       meal_ingredients: [],
     },
@@ -23,28 +26,9 @@ class MealShow extends Component {
     api_response: false,
   };
 
-  data = {
-  	labels: [
-  		'Red',
-  		'Blue',
-  		'Yellow'
-  	],
-  	datasets: [{
-  		data: [300, 50, 100],
-  		backgroundColor: [
-  		'#FF6384',
-  		'#36A2EB',
-  		'#FFCE56'
-  		],
-  		hoverBackgroundColor: [
-  		'#FF6384',
-  		'#36A2EB',
-  		'#FFCE56'
-  		]
-  	}]
-  };
-
   async componentDidMount() {
+    const { data: user } = await getUser();
+    const { data: diet } = await getDiet(user.dietId);
     const ingredientFinder = {};
     const { data: ingredients } = await getIngredients();
 
@@ -60,8 +44,7 @@ class MealShow extends Component {
       }
 
       const totals = this.setTotalCalories(meal);
-
-      this.setState({ meal, totals, api_response: true });
+      this.setState({ diet, meal, totals, api_response: true });
     } catch (exception) {
       if (exception.response && exception.response.status === 404) {
         console.log(exception);
@@ -136,31 +119,43 @@ class MealShow extends Component {
 
   render() {
     const page_size = 5;
-    const { current_page, meal, totals } = this.state;
+    const { current_page, meal, totals, diet } = this.state;
     return (
       <Spinner ready={this.state.api_response}>
         <div className="custom-max-width">
           <div className="card my-2">
             <div className="card-header bg-light">
-              <h5 className="card-title">Meal: {meal.name}</h5>
+              <h5 className="card-title">{meal.name} {meal.date}</h5>
             </div>
             <div className="card-body">
               <div className="row">
-                <div class="col-sm-6">
-                  <span className="card-text font-weight-bold">Macros</span>
-                  <Pie data={this.data} />
+                <div className="col-sm-6">
+                  <span className="card-text font-weight-bold">Your Macro Calories</span>
+                  <Pie data={{
+                  	labels: ['Carbs', 'Fat', 'Protein'],
+                  	datasets: [{
+                      data: [totals.carbohydrates*4, totals.fat*9, totals.protein*4],
+                      backgroundColor: ['RoyalBlue', 'Crimson', 'SeaGreen'],
+                      hoverBackgroundColor: ['RoyalBlue','Crimson','SeaGreen']
+                    }]
+                  }} />
                 </div>
-                <div class="col-sm-6">
-                  <span className="card-text font-weight-bold">Target Macros</span>
-                  <Pie data={this.data} />
+                <div className="col-sm-6">
+                  <span className="card-text font-weight-bold">Target Macro Calories</span>
+                  <Pie data={{
+                    labels: ['Carbs', 'Fat', 'Protein'],
+                    datasets: [{
+                      data: [diet.carbohydrates, diet.fat, diet.protein],
+                      backgroundColor: ['RoyalBlue', 'Crimson', 'SeaGreen'],
+                      hoverBackgroundColor: ['RoyalBlue','Crimson','SeaGreen']
+                    }]
+                  }} />
                 </div>
               </div>
             </div>
             <ul className="list-group list-group-flush">
               <li className="list-group-item">
-                <span className="card-text font-weight-bold">Date: </span>
-                {meal.date}
-                <span className="card-text font-weight-bold"> | Total Calories: </span>
+                <span className="card-text font-weight-bold"> Total Calories: </span>
                 {totals.calories.toFixed(2)}
                 <span className="card-text font-weight-bold"> | Total Carbs: </span>
                 {totals.carbohydrates.toFixed(2)}
@@ -172,7 +167,7 @@ class MealShow extends Component {
             </ul>
             <div className="card-body">
               <Link to={`meal-ingredients/new`}
-                className="btn btn-lg btn-primary">
+                className="btn btn-lg btn-primary btn-sm">
                 Add Ingredient
               </Link>
             </div>

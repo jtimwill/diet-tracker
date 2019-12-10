@@ -11,7 +11,13 @@ class MealNew extends Component {
         name: "",
         description: "",
       },
-      errors: {}
+      errors: {},
+      names: [
+        { name: 'Breakfast', id: 1 },
+        { name: 'Lunch', id: 2 },
+        { name: 'Dinner', id: 3 },
+        { name: 'Snack', id: 4 }
+      ]
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -65,15 +71,21 @@ class MealNew extends Component {
           <div className="card-body">
             <h5>New Meal</h5>
             <div className="form-group">
-              <label htmlFor="inlineFormInputName">Name</label>
-              <input
+              <label htmlFor="inputGroupName">Name</label>
+              <select
                 name="name"
-                type="text"
                 className="form-control"
-                id="inlineFormInputName"
+                id="inputGroupName"
                 value={this.state.meal.name}
                 onChange={this.handleChange}
-              />
+                >
+                <option value=""/>
+                {this.state.names.map(name => (
+                  <option key={name.id} value={name.name}>
+                    {name.name}
+                  </option>
+                ))}
+              </select>
               {this.state.errors.name &&
                 <div className="alert alert-danger">
                   {this.state.errors.name}

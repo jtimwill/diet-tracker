@@ -113,7 +113,7 @@ class UserNew extends Component {
               <label htmlFor="inlineFormInputEmail">Password</label>
               <input
                 name="password"
-                type="text"
+                type="password"
                 className="form-control"
                 id="inlineFormInputEmail"
                 value={this.state.user.password}

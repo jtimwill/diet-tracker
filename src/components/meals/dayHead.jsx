@@ -8,7 +8,7 @@ const DayHead = ({ day, onDaySelect, total_calories }) => {
       onClick={() => onDaySelect(day)}>
       <div className="">
         <span className="font-weight-bold">{day[0].date} </span>
-        <span className="badge badge-pill badge-primary">
+        <span className="badge badge-pill badge-primary m-3">
           Meals: {day.length}
         </span>
         <span className="badge badge-pill badge-info">

@@ -4,6 +4,7 @@ import { getMeals, deleteMeal } from '../../services/mealService.js';
 import { getIngredients } from '../../services/ingredientService.js';
 import { compareDates } from '../../utilities/sortUtility.js';
 import { reformatDate } from '../../utilities/dateUtility.js';
+import { getUser } from '../../services/userService.js';
 import './meal.css';
 import Pagination from '../reusable/pagination';
 import Spinner from '../reusable/spinner';
@@ -13,6 +14,7 @@ import { Line } from 'react-chartjs-2';
 
 class MealIndex extends Component {
   state = {
+    user: {},
     days: [],
     meals: [],
     current_page: 1,
@@ -26,7 +28,7 @@ class MealIndex extends Component {
     labels: [],
     datasets: [
       {
-        label: 'Calories',
+        label: 'Daily Calories',
         fill: false,
         lineTension: 0.2,
         backgroundColor: 'rgb(0,123,255,0.2)',
@@ -45,11 +47,38 @@ class MealIndex extends Component {
         pointRadius: 3,
         pointHitRadius: 10,
         data: []
+      },
+      {
+        label: 'Target Calories',
+        fill: true,
+        lineTension: 0.2,
+        backgroundColor: 'rgb(23,162,184,0.2)',
+        borderColor: 'rgb(23,162,184,1)',
+        borderCapStyle: 'butt',
+        borderDash: [],
+        borderDashOffset: 0.0,
+        borderJoinStyle: 'miter',
+        pointBorderColor: 'rgb(23,162,184,1)',
+        pointBackgroundColor: '#fff',
+        pointBorderWidth: 3,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: 'rgb(23,162,184,1)',
+        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBorderWidth: 2,
+        pointRadius: 3,
+        pointHitRadius: 10,
+        data: []
       }
     ]
   };
 
   async componentDidMount() {
+    const { data } = await getUser();
+    const user = {
+      username: data.username,
+      email: data.email,
+      calories: data.calories
+    };
     const ingredientFinder = {};
     const { data: ingredients } = await getIngredients();
     for (let ingredient of ingredients) {
@@ -70,13 +99,14 @@ class MealIndex extends Component {
     days.forEach((day) => {
       this.chart_data.labels.push(day[0].date);
       this.chart_data.datasets[0].data.push(this.getTotalCalories(day));
+      this.chart_data.datasets[1].data.push(user.calories);
     });
     this.chart_data.datasets[0].data.reverse();
 
-    this.setState({ days, ingredients, api_response: true });
+    this.setState({ user, days, ingredients, api_response: true });
   }
 
-  createDays(meals){ // Doesn't work with delete handler
+  createDays(meals){ 
     const days = {};
     for (let meal of meals) {
       if (days[meal.date]) {
@@ -162,7 +192,8 @@ class MealIndex extends Component {
 
   render() {
     const page_size = 5;
-    const { sort_direction,
+    const { user,
+            sort_direction,
             current_page,
             current_day,
             days
@@ -179,16 +210,20 @@ class MealIndex extends Component {
             <Line data={this.chart_data}/>
           </div>
           <ul className="list-group list-group-flush">
-            <li className="list-group-item">
-              <span className="card-text font-weight-bold">Days Tracked: </span>
-              {days.length}
+            <li className="list-group-item d-flex justify-content-around">
+              <span className="card-text">
+                <span className="font-weight-bold">Days Tracked: </span>{days.length}
+              </span>
+              <span className="card-text">
+                <span className="font-weight-bold">Target Calories: </span>{user.calories}
+              </span>
             </li>
           </ul>
           <div className="card-body">
             <Link to="/meals/new" className="btn btn-primary mr-1">
               New Meal
             </Link>
-            <button onClick={this.toggleSort} className="btn btn-info btn-sm">
+            <button onClick={this.toggleSort} className="btn btn-info">
               {"Sort by date "}
               <i className={"fa fa-sort-" + sort_direction}></i>
             </button>

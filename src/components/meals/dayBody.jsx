@@ -35,13 +35,12 @@ const DayBody = ({ day, current_day, onMealDelete, index }) => {
           <div className="card-body">
             <div className="d-flex flex-row align-items-center justify-content-between">
               <div>
-              <Link to={`/meals/${meal.id}/show`} className="">
-                {meal.name} --
-              </Link>
+              <Link to={`/meals/${meal.id}/show`} className="font-weight-bold">
+                {meal.name} -- </Link>
                 {formatInfo(meal)}
               </div>
               <div>
-                <Link to={`/meals/${meal.id}/edit`} className={`${btn}info`}>
+                <Link to={`/meals/${meal.id}/edit`} className={`${btn}info m-2`}>
                   <i className={`${fa}pencil-square-o`}></i>
                 </Link>
                 <button onClick={() => onMealDelete(meal)} className={`${btn}danger`}>
