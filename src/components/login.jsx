@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import Joi from 'joi-browser';
 import { login, getCurrentUser } from '../services/authService';
-import { getErrorMessage, validateStateObject } from '../utilities/validationUtility.js';
+import { validateStateObject, updateErrorObject } from '../utilities/validationUtility.js';
 
 class Login extends Component {
   constructor(props) {
@@ -26,13 +26,8 @@ class Login extends Component {
 
   handleChange(event) {
     const errors = { ...this.state.errors };
-    const errorMessage = getErrorMessage(event.currentTarget, this.schema);
-    if (errorMessage) {
-      errors[event.currentTarget.name] = errorMessage;
-    } else {
-      delete errors[event.currentTarget.name];
-    }
-
+    updateErrorObject(event, errors, this.schema);
+    
     const user = { ...this.state.user };
     user[event.currentTarget.name] = event.currentTarget.value;
 

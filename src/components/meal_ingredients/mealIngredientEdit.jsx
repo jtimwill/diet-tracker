@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Joi from 'joi-browser';
 import { getMealIngredient, updateMealIngredient } from '../../services/mealIngredientService.js';
 import { getIngredients } from '../../services/ingredientService.js';
-import { getErrorMessage, validateStateObject } from '../../utilities/validationUtility.js';
+import { validateStateObject, updateErrorObject } from '../../utilities/validationUtility.js';
 
 class MealIngredientEdit extends Component {
   constructor(props) {
@@ -41,12 +41,7 @@ class MealIngredientEdit extends Component {
 
   handleChange(event) {
     const errors = { ...this.state.errors };
-    const errorMessage = getErrorMessage(event.currentTarget, this.schema);
-    if (errorMessage) {
-      errors[event.currentTarget.name] = errorMessage;
-    } else {
-      delete errors[event.currentTarget.name];
-    }
+    updateErrorObject(event, errors, this.schema);
 
     const meal_ingredient = { ...this.state.meal_ingredient };
     meal_ingredient[event.currentTarget.name] = event.currentTarget.value;

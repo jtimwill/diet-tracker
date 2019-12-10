@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Joi from 'joi-browser';
 import { saveDiet } from '../../services/dietService.js';
-import { getErrorMessage, validateStateObject } from '../../utilities/validationUtility.js';
+import { validateStateObject, updateErrorObject } from '../../utilities/validationUtility.js';
 
 class DietNew extends Component {
   constructor(props) {
@@ -31,12 +31,7 @@ class DietNew extends Component {
 
   handleChange(event) {
     const errors = { ...this.state.errors };
-    const errorMessage = getErrorMessage(event.currentTarget, this.schema);
-    if (errorMessage) {
-      errors[event.currentTarget.name] = errorMessage;
-    } else {
-      delete errors[event.currentTarget.name];
-    }
+    updateErrorObject(event, errors, this.schema);
 
     const diet = { ...this.state.diet };
     diet[event.currentTarget.name] = event.currentTarget.value;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Joi from 'joi-browser';
 import { updateMeal, getMeal } from '../../services/mealService.js';
 import Spinner from '../reusable/spinner';
-import { getErrorMessage, validateStateObject } from '../../utilities/validationUtility.js';
+import { validateStateObject, updateErrorObject } from '../../utilities/validationUtility.js';
 
 class MealEdit extends Component {
   constructor(props) {
@@ -40,12 +40,7 @@ class MealEdit extends Component {
 
   handleChange(event) {
     const errors = { ...this.state.errors };
-    const errorMessage = getErrorMessage(event.currentTarget, this.schema);
-    if (errorMessage) {
-      errors[event.currentTarget.name] = errorMessage;
-    } else {
-      delete errors[event.currentTarget.name];
-    }
+    updateErrorObject(event, errors, this.schema);
 
     const meal = { ...this.state.meal };
     meal[event.currentTarget.name] = event.currentTarget.value;

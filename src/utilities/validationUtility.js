@@ -15,3 +15,12 @@ export function validateStateObject(state_obj, schema) {
   }
   return found_errors;
 }
+
+export function updateErrorObject(event, error_object, schema) {
+  const error_message = getErrorMessage(event.currentTarget, schema);
+  if (error_message) {
+    error_object[event.currentTarget.name] = error_message;
+  } else {
+    delete error_object[event.currentTarget.name];
+  }
+}

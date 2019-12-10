@@ -3,7 +3,7 @@ import Joi from 'joi-browser';
 import { saveUser } from '../../services/userService.js';
 import { getDiets } from '../../services/dietService.js';
 import { loginWithJwt } from '../../services/authService';
-import { getErrorMessage, validateStateObject } from '../../utilities/validationUtility.js';
+import { validateStateObject, updateErrorObject } from '../../utilities/validationUtility.js';
 
 class UserNew extends Component {
   constructor(props) {
@@ -39,12 +39,7 @@ class UserNew extends Component {
 
   handleChange(event) {
     const errors = { ...this.state.errors };
-    const errorMessage = getErrorMessage(event.currentTarget, this.schema);
-    if (errorMessage) {
-      errors[event.currentTarget.name] = errorMessage;
-    } else {
-      delete errors[event.currentTarget.name];
-    }
+    updateErrorObject(event, errors, this.schema);
 
     const user = { ...this.state.user };
     user[event.currentTarget.name] = event.currentTarget.value;
