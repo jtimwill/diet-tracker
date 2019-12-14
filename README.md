@@ -1,69 +1,86 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# DietTracker
 
-## Available Scripts
+## Project Description
+This is a simple user interface for my Diet API project. The structure of
+this project is based on what I learned in the following course: https://codewithmosh.com/p/mastering-react
 
-In the project directory, you can run:
+ The basic technology stack is:
+* React (UI Library)
+* Bootstrap (front-end component library)
+* Joi-browser (user-input validation)
+* React-router-dom (routing)
 
-### `npm start`
+Additional resources that helped me:
+* https://stackoverflow.com/questions/10123953/sort-javascript-object-array-by-date
+* https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
+* https://www.learnenough.com/css-and-layout-tutorial
+* https://reacttraining.com/react-router/web/example/auth-workflow
+* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+* https://www.w3schools.com/howto/howto_css_loader.asp
+* https://stackoverflow.com/questions/8549529/what-is-the-difference-between-screen-and-only-screen-in-media-queries
+* https://www.learnenough.com/css-and-layout-tutorial?single_page=1#sec-details-mobile-dropdown
+* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Transitions/Using_CSS_transitions#Defining_transitions
+* https://www.w3schools.com/jsref/met_win_confirm.asp
+* https://gist.github.com/primaryobjects/aacf6fa49823afb2f6ff065790a5b402
+* https://reacttraining.com/react-router/web/example/query-parameters
+* https://github.com/jerairrest/react-chartjs-2
+* https://stackoverflow.com/questions/44154939/load-local-images-in-react-js
+* https://github.com/jerairrest/react-chartjs-2
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Project Setup
+1. Install Node.js: https://nodejs.org/
+2. Download project files
+3. ``` $ cd diet-tracker ``` # navigate to the project's root directory
+4. ``` $ npm i ``` # install the packages listed in package.json
+5. ``` $ npm start ``` # start server
+6. Done. If you have also set up the corresponding Diet API project, you can navigate to http://localhost:3000/ to test the full project.
 
-### `npm test`
+## Routes and Components
+### Login/Logout
+|URL|Corresponding Component|
+|---|---|
+/login|Login|
+/logout|Logout|
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Users Resource
+|URL|Corresponding Component|
+|---|---|
+/users/index|UserIndex|
+/users/new|UserNew|
+/users/me/edit|UserEdit|
+/users/me/show|UserShow|
 
-### `npm run build`
+### Diets Resource
+|URL|Corresponding Component|
+|---|---|
+/diets/index|DietIndex|
+/diets/new|DietNew|
+/diets/:id/edit|DietEdit|
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Ingredients Resource
+|URL|Corresponding Component|
+|---|---|
+/ingredients/index|IngredientIndex|
+/ingredients/new|IngredientNew|
+/ingredients/:id/edit|IngredientEdit|
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Meal Ingredient Resource
+|URL|Corresponding Component|
+|---|---|
+/meals/:mealId/meal-ingredients/:id/edit|MealIngredientEdit|
+/meals/:mealId/meal-ingredients|MealIngredientNew|
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Meals Resource
+|URL|Corresponding Component|
+|---|---|
+/meals/index|MealIndex|
+/meals/new|MealNew|
+/meals/:id/edit|MealEdit|
+/meals/:id/show|MealShow|
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
-# diet-tracker
+### Misc Components
+|URL|Corresponding Component|
+|---|---|
+/|HomePage|
+/not-found|NotFound|
