@@ -25,7 +25,6 @@ Additional resources that helped me:
 * https://reacttraining.com/react-router/web/example/query-parameters
 * https://github.com/jerairrest/react-chartjs-2
 * https://stackoverflow.com/questions/44154939/load-local-images-in-react-js
-* https://github.com/jerairrest/react-chartjs-2
 
 
 ## Project Setup
